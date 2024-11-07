@@ -3,15 +3,14 @@ import { initializeApp, cert, getApps } from 'firebase-admin/app';
 import { getStorage } from 'firebase-admin/storage';
 import mime from 'mime-types';
 import { isAdminRequest } from "./auth/[...nextauth]";
-import serviceAccount from '';
 import { mongooseConnect } from '../../lib/mongoose';
 
 
-// Инициализация Firebase, если приложение еще не инициализировано
+
 if (!getApps().length) {
   initializeApp({
-    credential: cert(serviceAccount),
-    storageBucket: '',
+    credential: cert(JSON.parse(process.env.FIREBASE_CONFIG)),
+    storageBucket: process.env.STORAGE_BUCKET,
   });
 }
 
@@ -39,7 +38,6 @@ export default async function handle(req, res) {
     console.log({ext, file});
     
 
-    // Загрузка файла в Firebase Cloud Storage
     await bucket.upload(file.path, {
       destination: `images/${newFilename}`,
       metadata: {
@@ -47,8 +45,7 @@ export default async function handle(req, res) {
       },
     });
 
-    // Получение ссылки на загруженный файл
-    const link = ``;
+    const link = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/images%2F${newFilename}?alt=media`;
     links.push(link);
   }
 
