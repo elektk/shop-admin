@@ -30,7 +30,7 @@ export default async function handle(req, res) {
   });
 
   console.log('length:', files.file.length);
-  const links = [];
+  const links = [];2
 
   for (const file of files.file) {
     const ext = file.originalFilename.split('.').pop();
