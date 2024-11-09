@@ -48,11 +48,8 @@ export default async function handle(req, res) {
         if (product && product.images?.length > 0) {
           for (const imageUrl of product.images) {
             try {
-              // Декодируем URL перед извлечением имени файла
               const decodedUrl = decodeURIComponent(imageUrl);
-              // Извлекаем имя файла, убирая все лишние части
               const fileName = decodedUrl.split('/').pop().split('?')[0];
-              // Удаляем префикс "images/" если он есть
               const trimmedFileName = fileName.startsWith('images/') ? fileName.slice(7) : fileName;
   
               if (trimmedFileName) {
