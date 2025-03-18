@@ -3,12 +3,14 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import Spinner from "@/components/Spinner";
 import {withSwal} from "react-sweetalert2";
+import { useAccess } from "@/components/AccessContext";
 
 function SettingsPage({swal}) {
   const [products, setProducts] = useState([]);
   const [featuredProductId, setFeaturedProductId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [shippingFee, setShippingFee] = useState('');
+  const { isTestAdmin } = useAccess();
 
   useEffect(() => {
     setIsLoading(true);
@@ -55,13 +57,13 @@ function SettingsPage({swal}) {
       {!isLoading && (
         <>
           <label>Featured product</label>
-          <select value={featuredProductId} onChange={ev => setFeaturedProductId(ev.target.value)}>
+          <select disabled={isTestAdmin} value={featuredProductId} onChange={ev => setFeaturedProductId(ev.target.value)}>
             {products.length > 0 && products.map(product => (
               <option key={product._id} value={product._id}>{product.title}</option>
             ))}
           </select>
           <label>Shipping price (in usd)</label>
-          <input type="number"
+          <input disabled={isTestAdmin} type="number"
                  value={shippingFee}
                  onChange={ev => setShippingFee(ev.target.value)}
           />

@@ -1,7 +1,9 @@
 import {useSession} from "next-auth/react";
+import { useAccess } from "./AccessContext";
 
 export default function HomeHeader() {
   const {data:session} = useSession();
+  const { isTestAdmin } = useAccess();
   return (
     <div className="text-blue-900 flex justify-between">
       <h2 className="mt-0">
@@ -9,6 +11,7 @@ export default function HomeHeader() {
           <img src={session?.user?.image} alt="" className="w-6 h-6 rounded-md sm:hidden"/>
           <div>
             Hello, <b>{session?.user?.name}</b>
+            {isTestAdmin && <p style={{ color: "red" }}>Тестовый режим: действия ограничены</p>}
           </div>
         </div>
       </h2>

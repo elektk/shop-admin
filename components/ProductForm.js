@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import Spinner from "@/components/Spinner";
 import { ReactSortable } from "react-sortablejs";
+import { useAccess } from "./AccessContext";
 
 export default function ProductForm({
   _id,
@@ -24,6 +25,7 @@ export default function ProductForm({
   const [categories, setCategories] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const router = useRouter();
+  const { isTestAdmin } = useAccess();
 
   useEffect(() => {
     setCategoriesLoading(true);
@@ -114,10 +116,11 @@ export default function ProductForm({
         type="text"
         placeholder="название продукта"
         value={title}
+        disabled={isTestAdmin}
         onChange={ev => setTitle(ev.target.value)}
       />
       <label>Категория</label>
-      <select value={category} onChange={ev => setCategory(ev.target.value)}>
+      <select disabled={isTestAdmin} value={category} onChange={ev => setCategory(ev.target.value)}>
         <option value="">Без категории</option>
         {categories.length > 0 && categories.map(c => (
           <option key={c._id} value={c._id}>{c.name}</option>
@@ -151,6 +154,7 @@ export default function ProductForm({
               <img src={link} alt="" className="rounded-lg" />
               <button
                 type="button"
+                disabled={isTestAdmin}
                 onClick={() => deleteImage(link)}
                 className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
               >
@@ -169,13 +173,14 @@ export default function ProductForm({
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
           </svg>
           <div>Добавить фото</div>
-          <input type="file" onChange={uploadImages} className="hidden" />
+          <input disabled={isTestAdmin} type="file" onChange={uploadImages} className="hidden" />
         </label>
       </div>
       <label>Описание</label>
       <textarea
         placeholder="описание"
         value={description}
+        disabled={isTestAdmin}
         onChange={ev => setDescription(ev.target.value)}
       />
       <label>Цена (в рублях)</label>
@@ -183,9 +188,10 @@ export default function ProductForm({
         type="number"
         placeholder="цена"
         value={price}
+        disabled={isTestAdmin}
         onChange={ev => setPrice(ev.target.value)}
       />
-      <button type="submit" className="btn-primary">
+      <button disabled={isTestAdmin} type="submit" className="btn-primary">
         Сохранить
       </button>
     </form>

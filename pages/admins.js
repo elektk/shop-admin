@@ -4,11 +4,14 @@ import axios from "axios";
 import {withSwal} from "react-sweetalert2";
 import Spinner from "@/components/Spinner";
 import {prettyDate} from "@/lib/date";
+import { useAccess } from "@/components/AccessContext";
 
 function AdminsPage({swal}) {
   const [email,setEmail] = useState('');
   const [adminEmails,setAdminEmails] = useState([]);
   const [isLoading,setIsLoading] = useState(false);
+  const { isTestAdmin } = useAccess();
+
   function addAdmin(ev){
     ev.preventDefault();
     axios.post('/api/admins', {email}).then(res => {
@@ -67,6 +70,7 @@ function AdminsPage({swal}) {
             type="text"
             className="mb-0"
             value={email}
+            disabled={isTestAdmin}
             onChange={ev => setEmail(ev.target.value)}
             placeholder="google email"/>
           <button
@@ -104,7 +108,7 @@ function AdminsPage({swal}) {
               </td>
               <td>
                 <button
-                  onClick={() => deleteAdmin(adminEmail._id, adminEmail.email)} className="btn-red">Delete</button>
+                  disabled={isTestAdmin}  onClick={() => deleteAdmin(adminEmail._id, adminEmail.email)} className="btn-red">Delete</button>
               </td>
             </tr>
           ))}

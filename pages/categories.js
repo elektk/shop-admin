@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import { withSwal } from 'react-sweetalert2';
 import Spinner from "@/components/Spinner";
+import { useAccess } from "@/components/AccessContext";
 
 function Categories({swal}) {
   const [editedCategory, setEditedCategory] = useState(null);
@@ -11,6 +12,8 @@ function Categories({swal}) {
   const [categories,setCategories] = useState([]);
   const [properties,setProperties] = useState([]);
   const [isLoading,setIsLoading] = useState(false);
+  const { isTestAdmin } = useAccess();
+
   useEffect(() => {
     fetchCategories();
   }, [])
@@ -110,9 +113,11 @@ function Categories({swal}) {
           <input
             type="text"
             placeholder={'Category name'}
+            disabled={isTestAdmin}
             onChange={ev => setName(ev.target.value)}
             value={name}/>
           <select
+                  disabled={isTestAdmin}
                   onChange={ev => setParentCategory(ev.target.value)}
                   value={parentCategory}>
             <option value="">No parent category</option>
@@ -124,6 +129,7 @@ function Categories({swal}) {
         <div className="mb-2">
           <label className="block">Properties</label>
           <button
+            disabled={isTestAdmin}
             onClick={addProperty}
             type="button"
             className="btn-default text-sm mb-2">
@@ -166,7 +172,7 @@ function Categories({swal}) {
               }}
               className="btn-default">Cancel</button>
           )}
-          <button type="submit"
+          <button disabled={isTestAdmin} type="submit"
                   className="btn-primary py-1">
             Save
           </button>
@@ -203,6 +209,7 @@ function Categories({swal}) {
                   Edit
                 </button>
                 <button
+                  disabled={isTestAdmin}
                   onClick={() => deleteCategory(category)}
                   className="btn-red">Delete</button>
               </td>

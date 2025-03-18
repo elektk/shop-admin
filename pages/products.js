@@ -3,12 +3,21 @@ import Link from "next/link";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Spinner from "@/components/Spinner";
+import { useAccess } from "@/components/AccessContext";
+
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { isTestAdmin } = useAccess();
+
+  const handleClick = (e) => {
+    if (isTestAdmin) {
+      e.preventDefault();
+    }
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -29,13 +38,14 @@ export default function Products() {
   return (
     <Layout>
       <div className="flex justify-between items-center mb-4">
-        <Link className="btn-primary" href={'/products/new'}>Add new product</Link>
+        <Link disabled={isTestAdmin} className="btn-primary" href={'/products/new'}>Add new product</Link>
       </div>
       <input
           type="text"
           placeholder="Search product..."
           className="input"
           value={searchQuery}
+          disabled={isTestAdmin}
           onChange={ev => setSearchQuery(ev.target.value)}
         />
       <table className="basic mt-2">
@@ -62,7 +72,7 @@ export default function Products() {
                   <Link className="btn-default" href={'/products/edit/' + product._id}>
                     Edit
                   </Link>
-                  <Link className="btn-red" href={'/products/delete/' + product._id}>
+                  <Link onClick={handleClick} className="btn-red" href={'/products/delete/' + product._id}>
                     Delete
                   </Link>
                 </td>
